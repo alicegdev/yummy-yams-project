@@ -1,0 +1,12 @@
+{
+    "compilerOptions": {
+        "esModuleInterop": true,
+        "module": "CommonJS", // Si vous utilisez également CommonJS
+        "target": "ES6", // Assurez-vous que votre cible de compilation est ES6 ou supérieure
+        "outDir": "./dist",
+        "strict": true
+    },
+    "include": [
+        "*.ts"
+    ]
+}
