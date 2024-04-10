@@ -5,16 +5,18 @@ FROM node:14
 WORKDIR /usr/src/app
 
 # Copiez les fichiers de package.json et de package-lock.json dans le conteneur
-COPY package*.json ./
+COPY package.json .
+COPY package-lock.json .
 
 # Installez les dépendances
-RUN npm install
+#RUN npm install
 
 # Copiez le reste des fichiers de l'application dans le conteneur
 COPY . .
 
-# Exposez le port sur lequel l'application s'exécute
-EXPOSE 3000
+# Exposez le port sur lequel l'API s'exécute
+EXPOSE 3001
 
-# Commande pour démarrer l'application
-CMD ["npm", "start"]
+# Commande pour démarrer l'API
+CMD ["node", "api/app.js"] # Assurez-vous de changer app.js par le fichier principal de votre application API
+
