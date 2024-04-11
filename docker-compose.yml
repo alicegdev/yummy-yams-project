@@ -4,14 +4,16 @@ services:
   api:
     build: ./api
     ports:
-      - 3001:3001
+      - ${API_PORT}:${API_PORT}
     volumes:
       - ./api:/usr/src/app
     environment:
       - NODE_ENV=development
-      - PORT=3001
+      - PORT=${API_PORT}
     depends_on:
       - mongo
+    env_file:
+      - .env
 
   # app:
   #   build: ./app
@@ -29,10 +31,12 @@ services:
     ports:
       - 27017:27017
     environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: foobar
-      MONGO_INITDB_DATABASE: yummy-yams-db
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD}
+      MONGO_INITDB_DATABASE: ${MONGO_DBNAME}
     volumes:
       - ./pastries.json:/tmp/pastries.json
       - ./importscript.sh:/docker-entrypoint-initdb.d/importscript.sh
       - ./init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js
+    env_file:
+      - .env
