@@ -15,16 +15,16 @@ services:
     env_file:
       - .env
 
-  # app:
-  #   build: ./app
-  #   ports:
-  #     - 3000:3000
-  #   volumes:
-  #     - ./app:/usr/src/app
-  #   environment:
-  #     - NODE_ENV=development
-  #   depends_on:
-  #     - api
+  app:
+    build: ./app
+    ports:
+      - 3000:3000
+    volumes:
+      - ./app:/usr/src/app
+    environment:
+      - NODE_ENV=development
+    depends_on:
+      - api
 
   mongo:
     image: mongo:latest

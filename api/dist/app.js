@@ -21,13 +21,14 @@ const port = 3000;
 app.use(express_1.default.json());
 // URL de connexion à MongoDB
 const uri = 'mongodb://localhost:27017';
+const client = new mongodb_1.MongoClient(uri);
 // Middleware pour se connecter à la base de données MongoDB avant de gérer les requêtes
 app.use((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const client = new mongodb_1.MongoClient(uri);
     try {
         // Connexion à la base de données MongoDB
         yield client.connect();
         console.log('Connecté à MongoDB');
+        // simple route
         // Passer à la prochaine fonction middleware ou à la gestion de la route
         next();
     }
@@ -37,6 +38,16 @@ app.use((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     }
 }));
 // Route de test pour vérifier la connexion à MongoDB
+// Route GET pour récupérer des données de la base de données MongoDB
+app.get('/data', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        res.send("Yes we can");
+    }
+    catch (error) {
+        console.error('Erreur lors de la récupération des données :', error);
+        res.status(500).send('Erreur lors de la récupération des données depuis la base de données');
+    }
+}));
 // Démarrage du serveur
 app.listen(port, () => {
     console.log(`Serveur démarré sur http://localhost:${port}`);

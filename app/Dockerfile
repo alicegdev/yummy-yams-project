@@ -1,20 +1,19 @@
-# Utilisez l'image officielle de Node.js comme base
-FROM node:20
+FROM node:20 as build
 
-# Définissez le répertoire de travail dans le conteneur
 WORKDIR /usr/src/app
 
-# Copiez les fichiers de package.json et de package-lock.json dans le conteneur
 COPY package*.json ./
 
-# Installez les dépendances
 RUN npm install
 
-# Copiez le reste des fichiers de l'application dans le conteneur
 COPY . .
 
-# Exposez le port sur lequel l'application s'exécute
+RUN npm run build
+
+FROM nginx:alpine
+
+COPY --from=build /usr/src/app /usr/share/nginx/html
+
 EXPOSE 3000
 
-# Commande pour démarrer l'application
-CMD ["npm", "start"]
+CMD ["nginx", "-g", "daemon off;"]

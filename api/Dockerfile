@@ -9,14 +9,16 @@ COPY package.json .
 COPY package-lock.json .
 
 # Installez les dépendances
-#RUN npm install
+RUN npm install
 
 # Copiez le reste des fichiers de l'application dans le conteneur
 COPY . .
+
+RUN tsc
 
 # Exposez le port sur lequel l'API s'exécute
 EXPOSE 3001
 
 # Commande pour démarrer l'API
-CMD ["node", "api/app.js"] # Assurez-vous de changer app.js par le fichier principal de votre application API
+CMD ["node", "dist/app.js"] # Assurez-vous de changer app.js par le fichier principal de votre application API
 
