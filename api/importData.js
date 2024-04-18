@@ -24,7 +24,7 @@ async function main() {
 
       const data = JSON.parse(fs.readFileSync(`./data/${file}`, "utf8"));
       const collectionName = file.split(".")[0];
-      const collection = client.db("mydatabase").collection(collectionName);
+      const collection = db.collection(collectionName);
       await collection.insertMany(data);
       console.log(`Données insérées dans la collection ${collectionName}`);
     }
