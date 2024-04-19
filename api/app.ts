@@ -1,6 +1,6 @@
 import express from "express";
-import { MongoClient } from 'mongodb';
 import { Pastry } from "./models/Pastry"
+import cors from "cors";
 import { database } from "./database";
 
 // Configuration de l'application Express
@@ -8,7 +8,7 @@ export const app = express();
 const port = 3000;
 
 // Middleware pour parser le corps des requêtes en JSON
-app.use(express.json());
+app.use(cors());
 
 database.connect()
 
