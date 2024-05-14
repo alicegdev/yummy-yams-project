@@ -68,9 +68,9 @@ Chaque pâtisserie pourra être associée à un gagnant (donc un utilisateur exi
 
 ### Niveau développement
 
-- Les mots de passe des utilisateurs doivent être hachés avec une fonction de hachage comme `bcrypt` ou `argon2` avant d'être stockés dans la base de données
+- Les mots de passe des utilisateurs doivent être hachés avec une fonction de hachage comme `bcrypt` ou `argon2` avant d'être stockés dans la base de données  ✅
 - Les tokens JWT doivent être signés avec une clé secrète et vérifiés à chaque requête pour éviter toute tentative de falsification
-- Les informations sensibles (identifiants de connexion à la base, clés secrètes, etc.) ne doivent pas être exposées dans le code source et stockés dans un fichier `.env`
+- Les informations sensibles (identifiants de connexion à la base, clés secrètes, etc.) ne doivent pas être exposées dans le code source et stockés dans un fichier `.env` ✅
 
 ---
 
