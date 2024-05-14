@@ -51,11 +51,11 @@ Chaque pâtisserie pourra être associée à un gagnant (donc un utilisateur exi
 
 ## Contraintes techniques
 
-- L'architecture du projet doit être Dockerisée (avec un fichier `docker-compose.yml` pour lancer le projet)
-- Le back-end doit être écrit en Node.js avec Express, et fonctionner comme une API
+- L'architecture du projet doit être Dockerisée (avec un fichier `docker-compose.yml` pour lancer le projet) ✅
+- Le back-end doit être écrit en Node.js avec Express, et fonctionner comme une API ✅
 - Le front-end doit être écrit en React, avec un state manager (Redux/RTK) pour conserver les informations de l'utilisateur connecté et l'état applicatif tout au long du jeu
-- TypeScript doit être utilisé pour au moins le front-end ou le back-end (ou les deux)
-- Les données doivent être stockées dans une base de données MongoDB, et manipulées avec Mongoose
+- TypeScript doit être utilisé pour au moins le front-end ou le back-end (ou les deux) ✅
+- Les données doivent être stockées dans une base de données MongoDB, et manipulées avec Mongoose ✅
 - Les appels vers l'API doivent être sécurisés avec un système de token JWT
   - Un utilisateur qui se connecte doit donc recevoir un token JWT qu'il devra renvoyer à chaque requête pour prouver son identité. Ce token doit être stocké dans le local storage du navigateur, et dispose d'une durée de validité de 1h00
 
@@ -63,8 +63,8 @@ Chaque pâtisserie pourra être associée à un gagnant (donc un utilisateur exi
 
 ### Niveau applicatif
 
-- Le tirage des dés doit être effectué côté serveur (via un API call) pour éviter toute tentative de triche côté client
-- Chaque compte utilisateur ne peut jouer que jusqu'à 3 fois. Après 3 tentatives, le joueur ne pourra plus jouer jusqu'à la fin de l'évènement.
+- Le tirage des dés doit être effectué côté serveur (via un API call) pour éviter toute tentative de triche côté client ✅
+- Chaque compte utilisateur ne peut jouer que jusqu'à 3 fois. Après 3 tentatives, le joueur ne pourra plus jouer jusqu'à la fin de l'évènement. ✅
 
 ### Niveau développement
 
