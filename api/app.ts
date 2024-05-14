@@ -9,7 +9,7 @@ const port = 3000;
 
 // Route de test pour vérifier la connexion à MongoDB
 // Route GET pour récupérer des données de la base de données MongoDB
-app.get('/data', async (res: { json: (arg0: { 'pastries collection': any; }) => void; status: (arg0: number) => { (): any; new(): any; send: { (arg0: string): void; new(): any; }; }; }) => {
+app.get('/pastries', async (res: { json: (arg0: { 'pastries collection': any; }) => void; status: (arg0: number) => { (): any; new(): any; send: { (arg0: string): void; new(): any; }; }; }) => {
     try {
         res.json({
             'pastries collection': Pastry.find()
