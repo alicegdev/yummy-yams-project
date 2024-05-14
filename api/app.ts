@@ -7,14 +7,9 @@ import { database } from "./database";
 export const app = express();
 const port = 3000;
 
-// Middleware pour parser le corps des requêtes en JSON
-app.use(express.json());
-
-database.connect()
-
 // Route de test pour vérifier la connexion à MongoDB
 // Route GET pour récupérer des données de la base de données MongoDB
-app.get('/data', async (req, res) => {
+app.get('/data', async (res: { json: (arg0: { 'pastries collection': any; }) => void; status: (arg0: number) => { (): any; new(): any; send: { (arg0: string): void; new(): any; }; }; }) => {
     try {
         res.json({
             'pastries collection': Pastry.find()
