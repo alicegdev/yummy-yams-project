@@ -1,4 +1,4 @@
-import { Pastry, getTotalStock, getTotalWon } from "../models/Pastry";
+import { getTotalStock, getTotalWon } from "../models/Pastry";
 import { addPastryToUser, incrementPlayerAttempts } from "../models/User";
 
 const isYams = function (dices: number[]): boolean {
@@ -6,12 +6,12 @@ const isYams = function (dices: number[]): boolean {
 };
 
 const isSquare = function (dices: number[]): boolean {
-    const uniqueValues = new Set(this.dices);
+    const uniqueValues = new Set(dices);
     return uniqueValues.size === 2;
 };
 
 const isDouble = function (dices: number[]): boolean {
-    const uniqueValues = new Set(this.dices);
+    const uniqueValues = new Set(dices);
     return uniqueValues.size === 5;
 };
 
