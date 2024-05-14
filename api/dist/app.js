@@ -50,17 +50,10 @@ exports.app.post("/signup", (0, cors_1.default)(), (req, res) => __awaiter(void 
         pwd: pwd
     };
     try {
-        const check = yield User_1.User.findOne({ login: login });
-        if (check) {
-            res.json("User already exists.");
-        }
-        else {
-            res.json("Email does not exist.");
-            yield User_1.User.create(data);
-        }
+        yield User_1.User.create(data);
     }
     catch (e) {
-        res.json("Email does not exist");
+        res.status(500).json("An error occured." + e);
     }
 }));
 // Démarrage du serveur

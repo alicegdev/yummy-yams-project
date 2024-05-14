@@ -18,7 +18,7 @@ function Login() {
                 .then(res => {
                     console.log(login)
                     if (res.data === "User logged in.") {
-                        history("/home", { state: { id: login } })
+                        console.log("User logged in")
                     } else if (res.data === "Wrong details.") {
                         console.log("User has not signed up.")
                     }

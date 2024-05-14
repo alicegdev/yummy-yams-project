@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react"
 import axios from "axios";
-import { useNavigate, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 function Login() {
 
@@ -8,8 +8,6 @@ function Login() {
     const [pwd, setPwd] = useState('')
 
     async function submit(e: { preventDefault: () => void; }) {
-        const history = useNavigate();
-
         e.preventDefault();
         try {
             await axios.post("http://localhost:3001/signup", {

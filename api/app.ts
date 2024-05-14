@@ -44,15 +44,9 @@ app.post("/signup", cors(), async (req, res) => {
     }
 
     try {
-        const check = await User.findOne({ login: login })
-        if (check) {
-            res.json("User already exists.")
-        } else {
-            res.json("Email does not exist.")
-            await User.create(data)
-        }
+        await User.create(data)
     } catch (e) {
-        res.json("Email does not exist")
+        res.status(500).json("An error occured." + e)
     }
 })
 
