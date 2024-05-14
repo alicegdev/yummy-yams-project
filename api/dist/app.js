@@ -14,7 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.app = void 0;
 const express_1 = __importDefault(require("express"));
-const Pastry_1 = require("./models/Pastry");
+const Pastry_1 = __importDefault(require("./models/Pastry"));
 const database_1 = require("./database");
 // Configuration de l'application Express
 exports.app = (0, express_1.default)();
@@ -26,7 +26,15 @@ database_1.database.connect();
 // Route GET pour récupérer des données de la base de données MongoDB
 exports.app.get('/data', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        res.json({ 'pastries collection': new Pastry_1.Pastry().findAll() });
+        res.json({
+            'pastries collection': Pastry_1.default.find()
+                .then((pastries) => {
+                console.log("Found pastries:", pastries);
+            })
+                .catch((error) => {
+                console.error("Error finding pastries:", error);
+            })
+        });
     }
     catch (error) {
         console.error('Erreur lors de la récupération des données :', error);

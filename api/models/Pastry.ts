@@ -1,24 +1,19 @@
-import { database } from '../database';
+import { Schema, model, Document, Model } from "mongoose";
 
-export class Pastry {
-    private name: string;
-    private image: string;
-    private stock: number;
-    private quantityWon: number;
-
-    constructor(name = '', image = '', stock = 0, quantityWon = 0) {
-        this.name = name;
-        this.image = image;
-        this.stock = stock;
-        this.quantityWon = quantityWon;
-    }
-
-    async findAll(): Promise<Pastry[]> {
-        try {
-            return await database.pastriesCollection?.find().toArray() || [];
-        } catch (err) {
-            console.error('Erreur lors de la recherche des pâtisseries :', err);
-            return [];
-        }
-    }
+interface IPastry extends Document {
+  name: string;
+  image: string;
+  stock: number;
+  quantityWon: number;
 }
+
+const pastrySchema: Schema<IPastry> = new Schema<IPastry>({
+  name: { type: String },
+  image: { type: String },
+  stock: { type: Number },
+  quantityWon: { type: Number }
+}, { collection: "pastries" });
+
+const Pastry: Model<IPastry> = model<IPastry>("Pastry", pastrySchema);
+
+export default Pastry;

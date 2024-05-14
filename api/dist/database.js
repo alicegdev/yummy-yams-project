@@ -8,23 +8,38 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.database = exports.app = void 0;
 const express = require('express');
-const mongodb_1 = require("mongodb");
+const cors_1 = __importDefault(require("cors"));
+const mongoose_1 = __importDefault(require("mongoose"));
 class Database {
     constructor() {
-        this.client = new mongodb_1.MongoClient('mongodb://localhost:27017');
         this.db = null;
         this.pastriesCollection = null;
     }
     connect() {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                yield this.client.connect();
-                console.log('Connecté à la base de données MongoDB');
-                this.db = this.client.db('yummy-yams-db');
-                this.pastriesCollection = this.db.collection('pastries');
+                // await this.client.connect();
+                // console.log('Connecté à la base de données MongoDB');
+                // this.db = this.client.db('yummy-yams-db');
+                // this.pastriesCollection = this.db.collection('pastries');
+                exports.app.use((0, cors_1.default)());
+                exports.app.use(express.json());
+                const username = 'root';
+                const password = 'foobar';
+                const database = 'yummy-yams-db';
+                yield mongoose_1.default.connect(`mongodb://${username}:${password}@127.0.0.1:27017/${database}?retryWrites=true&w=majority`) // mongo:27017 pour lancer avec docker  // localhost:27017 pour lancer en local
+                    .then(() => {
+                    console.log('Connexion à MongoDB réussie');
+                })
+                    .catch((error) => {
+                    console.error('Erreur de connexion à MongoDB :', error);
+                });
             }
             catch (err) {
                 console.error('Erreur de connexion à la base de données :', err);
