@@ -9,14 +9,17 @@ function Login() {
 
     async function submit(e: { preventDefault: () => void; }) {
         e.preventDefault();
+        console.log(login);
+        console.log(pwd);
         try {
-            await axios.post("http://localhost:3000/login", {
+            await axios.post("http://localhost:3001/", {
                 login, pwd
             })
                 .then(res => {
-                    if (res.data = "Email exists.") {
+                    console.log(login)
+                    if (res.data === "User logged in.") {
                         history("/home", { state: { id: login } })
-                    } else if (res.data = "Email does not exist.") {
+                    } else if (res.data === "Wrong details.") {
                         console.log("User has not signed up.")
                     }
                 })

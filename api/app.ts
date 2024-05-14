@@ -4,31 +4,35 @@ import { Pastry } from "./models/Pastry"
 import { database } from "./database";
 import cors from "cors";
 import { User } from "./models/User";
+import bodyParser from "body-parser";
 
 // Configuration de l'application Express
 export const app = express();
-const port = 3000;
+app.use(cors())
+app.use(bodyParser.json());
 
-app.get("/", cors(), (req, res) => {
+const port = 3001;
 
+database.connect();
+
+app.get("/", cors(), async (req, res) => {
 })
 
 app.post("/", cors(), async (req, res) => {
     const { login, pwd } = req.body;
     try {
-        const check = await User.findOne({ login: login })
+        const check = await User.findOne({ login: login, pwd: pwd })
         if (check) {
-            res.json("Email exists.")
+            res.json("User logged in.")
         } else {
-            res.json("Email does not exist.")
+            res.json("Wrong details.")
         }
     } catch (e) {
-        res.json("Email does not exist.")
+        res.status(500).json("An error occured." + e)
     }
 })
 
-app.get("/signup", cors(), (req, res) => {
-
+app.get("/signup", cors(), async (req, res) => {
 })
 
 app.post("/signup", cors(), async (req, res) => {
@@ -42,10 +46,10 @@ app.post("/signup", cors(), async (req, res) => {
     try {
         const check = await User.findOne({ login: login })
         if (check) {
-            res.json("User exists.")
+            res.json("User already exists.")
         } else {
             res.json("Email does not exist.")
-            await User.insertMany([data])
+            await User.create(data)
         }
     } catch (e) {
         res.json("Email does not exist")

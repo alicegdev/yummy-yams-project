@@ -14,31 +14,53 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.app = void 0;
 const express_1 = __importDefault(require("express"));
-const Pastry_1 = __importDefault(require("./models/Pastry"));
 const database_1 = require("./database");
+const cors_1 = __importDefault(require("cors"));
+const User_1 = require("./models/User");
+const body_parser_1 = __importDefault(require("body-parser"));
 // Configuration de l'application Express
 exports.app = (0, express_1.default)();
-const port = 3000;
-// Middleware pour parser le corps des requêtes en JSON
-exports.app.use(express_1.default.json());
+exports.app.use((0, cors_1.default)());
+exports.app.use(body_parser_1.default.json());
+const port = 3001;
 database_1.database.connect();
-// Route de test pour vérifier la connexion à MongoDB
-// Route GET pour récupérer des données de la base de données MongoDB
-exports.app.get('/data', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.app.get("/", (0, cors_1.default)(), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+}));
+exports.app.post("/", (0, cors_1.default)(), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { login, pwd } = req.body;
     try {
-        res.json({
-            'pastries collection': Pastry_1.default.find()
-                .then((pastries) => {
-                console.log("Found pastries:", pastries);
-            })
-                .catch((error) => {
-                console.error("Error finding pastries:", error);
-            })
-        });
+        const check = yield User_1.User.findOne({ login: login, pwd: pwd });
+        if (check) {
+            res.json("User logged in.");
+        }
+        else {
+            res.json("Wrong details.");
+        }
     }
-    catch (error) {
-        console.error('Erreur lors de la récupération des données :', error);
-        res.status(500).send('Erreur lors de la récupération des données depuis la base de données');
+    catch (e) {
+        res.status(500).json("An error occured." + e);
+    }
+}));
+exports.app.get("/signup", (0, cors_1.default)(), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+}));
+exports.app.post("/signup", (0, cors_1.default)(), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { login, pwd } = req.body;
+    const data = {
+        login: login,
+        pwd: pwd
+    };
+    try {
+        const check = yield User_1.User.findOne({ login: login });
+        if (check) {
+            res.json("User already exists.");
+        }
+        else {
+            res.json("Email does not exist.");
+            yield User_1.User.create(data);
+        }
+    }
+    catch (e) {
+        res.json("Email does not exist");
     }
 }));
 // Démarrage du serveur

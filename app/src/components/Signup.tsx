@@ -12,13 +12,13 @@ function Login() {
 
         e.preventDefault();
         try {
-            await axios.post("http://localhost:3000/signup", {
+            await axios.post("http://localhost:3001/signup", {
                 login, pwd
             }).then(res => {
-                if (res.data = "Email exists.") {
-                    console.log("User has not signed up.")
-                } else if (res.data = "Email does not exist.") {
-                    history("/home", { state: { id: login } })
+                if (res.data === "User already exists.") {
+                    console.log("User already exists")
+                } else if (res.data === "Email does not exist.") {
+                    console.log("Email does not exist.")
                 }
             })
                 .catch(e => {

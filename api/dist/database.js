@@ -19,15 +19,10 @@ const mongoose_1 = __importDefault(require("mongoose"));
 class Database {
     constructor() {
         this.db = null;
-        this.pastriesCollection = null;
     }
     connect() {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                // await this.client.connect();
-                // console.log('Connecté à la base de données MongoDB');
-                // this.db = this.client.db('yummy-yams-db');
-                // this.pastriesCollection = this.db.collection('pastries');
                 exports.app.use((0, cors_1.default)());
                 exports.app.use(express.json());
                 const username = 'root';
