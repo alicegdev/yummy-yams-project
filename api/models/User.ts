@@ -26,6 +26,26 @@ export const incrementPlayerAttempts = async (login: string): Promise<void> => {
     }
 };
 
+export const canUserPlayAgain = async (login: string): Promise<boolean> => {
+    try {
+        const user = await User.findOne({ login: login });
+
+        if (!user) {
+            throw new Error("User not found.");
+        }
+
+        if (user.player_attempts < 3) {
+            return true;
+        } else {
+            return false;
+        }
+    } catch (error) {
+        console.error("Error checking if user can play again:", error);
+        return false;
+    };
+}
+
+
 export const addPastryToUser = async (login: string): Promise<void> => {
     try {
         const randomPastryId = await selectPastryId();
