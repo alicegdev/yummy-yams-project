@@ -9,8 +9,8 @@ export interface IUser extends Document {
 }
 
 export const userSchema: Schema<IUser> = new Schema<IUser>({
-    login: { type: String },
-    pwd: { type: String },
+    login: { type: String, required: true },
+    pwd: { type: String, required: true },
     player_attempts: { type: Number },
     player_pastries_won: { type: [pastrySchema] }
 }, { collection: "users" });
