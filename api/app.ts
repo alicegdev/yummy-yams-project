@@ -1,6 +1,6 @@
 import express from "express";
 import { MongoClient } from 'mongodb';
-import Pastry from "./models/Pastry"
+import { Pastry } from "./models/Pastry"
 import { database } from "./database";
 
 // Configuration de l'application Express

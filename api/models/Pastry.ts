@@ -14,29 +14,66 @@ export const pastrySchema: Schema<IPastry> = new Schema<IPastry>({
   quantityWon: { type: Number }
 }, { collection: "pastries" });
 
+export const Pastry: Model<IPastry> = model<IPastry>("Pastry", pastrySchema);
+
 // Ajout de la méthode statique pour comptabiliser le stock total des pâtisseries
-pastrySchema.statics.getTotalStock = async function (): Promise<number> {
+export const getTotalStock = () => {
+  Pastry.aggregate([
+    {
+      $group: {
+        _id: null,
+        totalStock: { $sum: "$stock" }
+      }
+    }
+  ])
+};
+
+// Ajout de la méthode statique pour comptabiliser le stock total des pâtisseries
+export const getTotalWon = () => {
+  Pastry.aggregate([
+    {
+      $group: {
+        _id: null,
+        totalWon: { $sum: "$quantityWon" }
+      }
+    }
+  ])
+};
+
+export const selectPastryId = async (): Promise<string> => {
   try {
-    const pastries = await this.find();
-    // Calculer le stock total en additionnant le stock de chaque pâtisserie
-    const totalStock = pastries.reduce((acc: number, pastry: IPastry) => acc + pastry.stock, 0);
-    return totalStock;
+    // Récupérer tous les IDs des pâtisseries avec un stock supérieur à 0
+    const availablePastryIds = await Pastry.aggregate([
+      { $match: { stock: { $gt: 0 } } }, // Filtrer les pâtisseries avec un stock supérieur à 0
+      { $group: { _id: null, ids: { $push: "$_id" } } } // Regrouper les IDs des pâtisseries
+    ]);
+
+    // Récupérer tous les IDs des pâtisseries avec un stock égal à 0
+    const zeroStockPastryIds = await Pastry.aggregate([
+      { $match: { stock: 0 } }, // Filtrer les pâtisseries avec un stock égal à 0
+      { $group: { _id: null, ids: { $push: "$_id" } } } // Regrouper les IDs des pâtisseries
+    ]);
+
+    // Sélectionner aléatoirement un ID parmi ceux avec un stock supérieur à 0
+    if (availablePastryIds.length > 0) {
+      const randomIndex = Math.floor(Math.random() * availablePastryIds[0].ids.length);
+      return availablePastryIds[0].ids[randomIndex];
+    } else if (zeroStockPastryIds.length > 0) {
+      const randomIndex = Math.floor(Math.random() * zeroStockPastryIds[0].ids.length);
+      return zeroStockPastryIds[0].ids[randomIndex];
+    } else {
+      throw new Error("No pastries found.");
+    }
   } catch (error: any) {
-    throw new Error("Error calculating total stock: " + error.message);
+    throw new Error("Error selecting pastry ID: " + error.message);
   }
 };
 
-// Ajout de la méthode statique pour additionner toutes les quantités gagnées des pâtisseries
-pastrySchema.statics.getTotalQuantityWon = async function (): Promise<number> {
+export const incrementQuantityWon = async (pastryId: string): Promise<void> => {
   try {
-    const pastries = await this.find();
-    const totalQuantityWon = pastries.reduce((acc: number, pastry: IPastry) => acc + pastry.quantityWon, 0);
-    return totalQuantityWon;
+    await Pastry.updateOne({ _id: pastryId }, { $inc: { quantityWon: 1 } });
+    console.log("QuantityWon incremented successfully.");
   } catch (error: any) {
-    throw new Error("Error calculating total quantity won: " + error.message);
+    console.error("Error incrementing quantityWon:", error.message);
   }
 };
-
-const Pastry: Model<IPastry> = model<IPastry>("Pastry", pastrySchema);
-
-export default Pastry;
