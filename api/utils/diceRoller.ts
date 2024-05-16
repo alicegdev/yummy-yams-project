@@ -31,33 +31,33 @@ export const rollerHandler = async (login: string): Promise<any> => {
     let messageToUser = '';
     const dices = generateRandomDices();
 
-    // if ((getTotalStock() > getTotalWon()) && await canUserPlayAgain(login)) {
-    incrementPlayerAttempts(login);
+    if ((getTotalStock() > getTotalWon()) && await canUserPlayAgain(login)) {
+        incrementPlayerAttempts(login);
 
-    if (isYams(dices)) {
-        const count = 3;
-        for (let i = 0; i < count; i++) {
-            await addPastryToUser(login);
+        if (isYams(dices)) {
+            const count = 3;
+            for (let i = 0; i < count; i++) {
+                await addPastryToUser(login);
+            }
+            messageToUser += "Yams ! Vous avez gagné 3 pâtisseries. ";
+        } else if (isDouble(dices)) {
+            const count = 2;
+            for (let i = 0; i < count; i++) {
+                await addPastryToUser(login);
+            }
+            messageToUser += "Double ! Vous avez gagné 2 pâtisseries. ";
+        } else if (isSquare(dices)) {
+            const count = 1;
+            for (let i = 0; i < count; i++) {
+                await addPastryToUser(login);
+            }
+            messageToUser += "Carré ! Vous avez gagné 1 pâtisserie. ";
+        } else {
+            messageToUser = "Perdu ! Vous n'avez pas gagné de pâtisseries.";
         }
-        messageToUser += "Yams ! Vous avez gagné 3 pâtisseries. ";
-    } else if (isDouble(dices)) {
-        const count = 2;
-        for (let i = 0; i < count; i++) {
-            await addPastryToUser(login);
-        }
-        messageToUser += "Double ! Vous avez gagné 2 pâtisseries. ";
-    } else if (isSquare(dices)) {
-        const count = 1;
-        for (let i = 0; i < count; i++) {
-            await addPastryToUser(login);
-        }
-        messageToUser += "Carré ! Vous avez gagné 1 pâtisserie. ";
     } else {
-        messageToUser = "Perdu ! Vous n'avez pas gagné de pâtisseries.";
+        messageToUser = "Vous avez atteint le nombre maximum d'essais et/ou il n'y a plus de pâtisseries à gagner.";
     }
-    // } else {
-    //     messageToUser = "Vous avez atteint le nombre maximum d'essais et/ou il n'y a plus de pâtisseries à gagner.";
-    // }
 
     return { messageToUser, dices };
 };

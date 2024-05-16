@@ -29,18 +29,6 @@ exports.app.use((0, cors_1.default)());
 exports.app.use(body_parser_1.default.json());
 const port = 3001;
 database_1.database.connect();
-function authenticateToken(req, res, next) {
-    const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1];
-    if (token == null)
-        return res.sendStatus(401);
-    process.env.ACCESS_TOKEN_SECRET && jsonwebtoken_1.default.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, userLogin) => {
-        if (err)
-            return res.sendStatus(403);
-        req.login = userLogin;
-        next();
-    });
-}
 exports.app.post("/", (0, cors_1.default)(), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { login, pwd } = req.body;
     try {
@@ -48,7 +36,11 @@ exports.app.post("/", (0, cors_1.default)(), (req, res) => __awaiter(void 0, voi
         const userLogin = { login: login };
         const isMatch = user && (yield argon2_1.default.verify(user.pwd, pwd));
         if (isMatch) {
-            process.env.ACCESS_TOKEN ? res.json({ accessToken: jsonwebtoken_1.default.sign(userLogin, process.env.ACCESS_TOKEN) }) : res.json('Could not generate token');
+            process.env.ACCESS_TOKEN ? res.json({
+                accessToken: jsonwebtoken_1.default.sign(userLogin, process.env.ACCESS_TOKEN, {
+                    expiresIn: '1h',
+                })
+            }) : res.json('Could not generate token');
         }
         else {
             res.json("Wrong details.");
@@ -91,6 +83,14 @@ exports.app.post("/signup", (0, cors_1.default)(), (req, res) => __awaiter(void 
 exports.app.post("/diceRoll", (0, cors_1.default)(), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { login } = req.body;
+        const authHeader = req.headers['authorization'];
+        const token = authHeader && authHeader.split(' ')[1];
+        if (token) {
+            process.env.ACCESS_TOKEN_SECRET && jsonwebtoken_1.default.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, userLogin) => {
+                if (err)
+                    return res.sendStatus(403);
+            });
+        }
         console.log(login);
         if (login) {
             const { messageToUser, dices } = yield (0, diceRoller_1.rollerHandler)(login);
