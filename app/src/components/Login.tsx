@@ -17,8 +17,9 @@ function Login() {
                 login, pwd
             })
                 .then(res => {
-                    if (res.data === "User logged in.") {
+                    if (res.data.accessToken) {
                         setLogin(login);
+                        localStorage.setItem('token', res.data.accessToken);
                         navigate('/home');
                     } else if (res.data === "Wrong details.") {
                         setErrorMessage("Erreur d'authentification");

@@ -20,43 +20,35 @@ const argon2_1 = __importDefault(require("argon2"));
 const User_1 = require("./models/User");
 const body_parser_1 = __importDefault(require("body-parser"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
-const jwtToken_1 = __importDefault(require("./jwtToken"));
 const diceRoller_1 = require("./utils/diceRoller");
+const dotenv_1 = __importDefault(require("dotenv"));
+dotenv_1.default.config();
 // Configuration de l'application Express
 exports.app = (0, express_1.default)();
 exports.app.use((0, cors_1.default)());
 exports.app.use(body_parser_1.default.json());
 const port = 3001;
 database_1.database.connect();
-// Méthode pour générer un tableau de 5 dés avec des valeurs aléatoires
-const isAuth = (req) => __awaiter(void 0, void 0, void 0, function* () {
-    const token = req.headers['x-access-token'];
-    const decoded = jsonwebtoken_1.default.verify(token, jwtToken_1.default);
-    const login = decoded.login;
-    const user = yield User_1.User.findOne({ login: login });
-    return user ? true : false;
-});
-// Méthode pour générer un tableau de 5 dés avec des valeurs aléatoires
-const getLogin = (req) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        if ((yield isAuth(req)) === true) {
-            const token = req.headers['x-access-token'];
-            const decoded = jsonwebtoken_1.default.verify(token, jwtToken_1.default);
-            const login = decoded.login;
-            return login;
-        }
-    }
-    catch (_a) {
-        throw new Error("Couldn't get valid token.");
-    }
-});
+function authenticateToken(req, res, next) {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+    if (token == null)
+        return res.sendStatus(401);
+    process.env.ACCESS_TOKEN_SECRET && jsonwebtoken_1.default.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, userLogin) => {
+        if (err)
+            return res.sendStatus(403);
+        req.login = userLogin;
+        next();
+    });
+}
 exports.app.post("/", (0, cors_1.default)(), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { login, pwd } = req.body;
     try {
         const user = yield User_1.User.findOne({ login: login });
+        const userLogin = { login: login };
         const isMatch = user && (yield argon2_1.default.verify(user.pwd, pwd));
         if (isMatch) {
-            res.json("User logged in.");
+            process.env.ACCESS_TOKEN ? res.json({ accessToken: jsonwebtoken_1.default.sign(userLogin, process.env.ACCESS_TOKEN) }) : res.json('Could not generate token');
         }
         else {
             res.json("Wrong details.");
@@ -98,12 +90,16 @@ exports.app.post("/signup", (0, cors_1.default)(), (req, res) => __awaiter(void 
 }));
 exports.app.post("/diceRoll", (0, cors_1.default)(), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const login = yield getLogin(req);
+        const { login } = req.body;
+        console.log(login);
         if (login) {
-            (0, diceRoller_1.rollerHandler)(login);
+            const { messageToUser, dices } = yield (0, diceRoller_1.rollerHandler)(login);
+            console.log(messageToUser);
+            console.log(dices);
+            res.status(200).json({ message: messageToUser, dices: dices });
         }
         else {
-            throw new Error("Couldn't get valid token.");
+            throw new Error("Couldn't get valid login.");
         }
     }
     catch (e) {
