@@ -95,7 +95,8 @@ app.post("/diceRoll", cors(), async (req, res) => {
     try {
         const login = await getLogin(req);
         if (login) {
-            rollerHandler(login);
+            const { message, dices } = await rollerHandler(login);
+            return { message, dices };
         } else {
             throw new Error("Couldn't get valid token.")
         }

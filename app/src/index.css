@@ -31,18 +31,6 @@ body {
 }
 
 button {
-  position: relative;
-  top:80px;
-  left:10px;
-  padding: 15px 50px;
-  color: #fff;
-  background-color: #f4d35e;
-  border: none;
-  font-size: 20px;
-  border-radius: 20px; 
-  box-shadow: 1px 3px #50514F;
-  outline: none;
-  transition: .3s; 
 }
 
 button:hover, button:active {
@@ -52,8 +40,14 @@ button:hover, button:active {
   transform: translateY(15px); 
 }
 
+.homepage {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+}
+                               
 .game {
-  position: relative;
+  display: flex;
   width: auto;
   height: 100%; 
 }
@@ -65,7 +59,6 @@ button:hover, button:active {
 }
 
 .dice {
-  position: relative;
   width: 100px;
   height: 100px;
   transform-style: preserve-3d;
@@ -80,17 +73,6 @@ button:hover, button:active {
   border-radius: 20px;
   background-color: #f25f5c;
   box-shadow: inset 2px 2px #d90429;
-}
-
-.dice-one {
-  position: absolute;
-  left: 150px; 
-}
-
-.dice-two {
-  position: absolute;
-  left: -50px;
-  
 }
 
 .side {

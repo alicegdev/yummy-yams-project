@@ -30,8 +30,9 @@ const generateRandomDices = function (): number[] {
 // Créer un nouvel objet DiceCombo
 export const rollerHandler = async (login: string): Promise<any> => {
     let messageToUser = '';
+    const dices = generateRandomDices();
+
     if ((getTotalStock() > getTotalWon()) && await canUserPlayAgain(login)) {
-        const dices = generateRandomDices();
         incrementPlayerAttempts(login);
         const conditions = [
             { condition: isYams(dices), count: 3, message: "Yams ! Vous avez gagné 3 pâtisseries." },
@@ -50,7 +51,7 @@ export const rollerHandler = async (login: string): Promise<any> => {
             }
         });
     } else {
-        messageToUser = "Vous avez atteint le nombre maximum d'essais ou il n'y a plus de pâtisseries à gagner."
+        messageToUser = "Vous avez atteint le nombre maximum d'essais et/ou il n'y a plus de pâtisseries à gagner."
     }
-    return messageToUser;
+    return { messageToUser, dices };
 };

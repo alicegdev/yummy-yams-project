@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from "react"
+import { useContext, useState } from "react"
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
+import { UserContext, UserContextType } from '../App';
 
 function Login() {
-    const [login, setLogin] = useState('')
+    const { login, setLogin } = useContext<UserContextType>(UserContext);
     const [pwd, setPwd] = useState('')
-    const [isAuth, setIsAuth] = useState(false)
     const navigate = useNavigate();
     const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
@@ -18,7 +18,7 @@ function Login() {
             })
                 .then(res => {
                     if (res.data === "User logged in.") {
-                        setIsAuth(true);
+                        setLogin(login);
                         navigate('/home');
                     } else if (res.data === "Wrong details.") {
                         setErrorMessage("Erreur d'authentification");

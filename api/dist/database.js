@@ -16,6 +16,8 @@ exports.database = exports.app = void 0;
 const express = require('express');
 const cors_1 = __importDefault(require("cors"));
 const mongoose_1 = __importDefault(require("mongoose"));
+const dotenv_1 = __importDefault(require("dotenv"));
+dotenv_1.default.config();
 class Database {
     constructor() {
         this.db = null;
@@ -25,9 +27,9 @@ class Database {
             try {
                 exports.app.use((0, cors_1.default)());
                 exports.app.use(express.json());
-                const username = 'root';
-                const password = 'foobar';
-                const database = 'yummy-yams-db';
+                const username = process.env.MONGO_USERNAME;
+                const password = process.env.MONGO_PASSWORD;
+                const database = process.env.MONGO_DBNAME;
                 yield mongoose_1.default.connect(`mongodb://${username}:${password}@127.0.0.1:27017/${database}?retryWrites=true&w=majority`) // mongo:27017 pour lancer avec docker  // localhost:27017 pour lancer en local
                     .then(() => {
                     console.log('Connexion à MongoDB réussie');
