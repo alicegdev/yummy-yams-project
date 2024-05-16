@@ -34,35 +34,31 @@ const generateRandomDices = function () {
     }
     return dices;
 };
+// Créer un nouvel objet DiceCombo
 const rollerHandler = (login) => __awaiter(void 0, void 0, void 0, function* () {
     let messageToUser = '';
     const dices = generateRandomDices();
-    if (((0, Pastry_1.getTotalStock)() > (0, Pastry_1.getTotalWon)()) && (yield (0, User_1.canUserPlayAgain)(login))) {
-        (0, User_1.incrementPlayerAttempts)(login);
-        if (isYams(dices)) {
-            const count = 3;
-            for (let i = 0; i < count; i++) {
-                yield (0, User_1.addPastryToUser)(login);
+    console.log("total Stock " + (yield (0, Pastry_1.getTotalStock)()));
+    console.log("total won" + (yield (0, Pastry_1.getTotalWon)()));
+    console.log("User can play again " + (yield (0, User_1.canUserPlayAgain)(login)));
+    if (((yield (0, Pastry_1.getTotalStock)()) > (yield (0, Pastry_1.getTotalWon)())) && (yield (0, User_1.canUserPlayAgain)(login))) {
+        yield (0, User_1.incrementPlayerAttempts)(login);
+        const conditions = [
+            { condition: isYams(dices), count: 3, message: "Yams ! Vous avez gagné 3 pâtisseries." },
+            { condition: isDouble(dices), count: 2, message: "Double ! Vous avez gagné 2 pâtisseries." },
+            { condition: isSquare(dices), count: 1, message: "Carré ! Vous avez gagné 1 pâtisserie." }
+        ];
+        conditions.forEach((_a) => __awaiter(void 0, [_a], void 0, function* ({ condition, count, message }) {
+            if (condition) {
+                for (let i = 0; i < count; i++) {
+                    yield (0, User_1.addPastryToUser)(login);
+                }
+                messageToUser = message;
             }
-            messageToUser += "Yams ! Vous avez gagné 3 pâtisseries. ";
-        }
-        else if (isDouble(dices)) {
-            const count = 2;
-            for (let i = 0; i < count; i++) {
-                yield (0, User_1.addPastryToUser)(login);
+            else {
+                messageToUser = "Perdu ! Vous n'avez pas gagné de pâtisseries.";
             }
-            messageToUser += "Double ! Vous avez gagné 2 pâtisseries. ";
-        }
-        else if (isSquare(dices)) {
-            const count = 1;
-            for (let i = 0; i < count; i++) {
-                yield (0, User_1.addPastryToUser)(login);
-            }
-            messageToUser += "Carré ! Vous avez gagné 1 pâtisserie. ";
-        }
-        else {
-            messageToUser = "Perdu ! Vous n'avez pas gagné de pâtisseries.";
-        }
+        }));
     }
     else {
         messageToUser = "Vous avez atteint le nombre maximum d'essais et/ou il n'y a plus de pâtisseries à gagner.";

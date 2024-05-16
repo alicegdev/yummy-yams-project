@@ -14,23 +14,29 @@ export const pastrySchema: Schema<IPastry> = new Schema<IPastry>({
   quantityWon: { type: Number }
 }, { collection: "pastries" });
 
-export const Pastry: Model<IPastry> = model<IPastry>("Pastry", pastrySchema);
+export const Pastry: Model<IPastry> = model<IPastry>("pastries", pastrySchema);
 
 // Ajout de la méthode statique pour comptabiliser le stock total des pâtisseries
-export const getTotalStock = () => {
-  Pastry.aggregate([
+export const getTotalStock = async () => {
+  const result = await Pastry.aggregate([
     {
       $group: {
         _id: null,
         totalStock: { $sum: "$stock" }
       }
     }
-  ])
+  ]);
+
+  if (Array.isArray(result) && result.length > 0 && result[0].totalStock !== undefined) {
+    return result[0].totalStock; // Retourner la valeur de 'totalStock'
+  } else {
+    return 0;
+  }
 };
 
 // Ajout de la méthode statique pour comptabiliser le stock total des pâtisseries
-export const getTotalWon = () => {
-  Pastry.aggregate([
+export const getTotalWon = async () => {
+  const result = await Pastry.aggregate([
     {
       $group: {
         _id: null,
@@ -38,6 +44,12 @@ export const getTotalWon = () => {
       }
     }
   ])
+
+  if (Array.isArray(result) && result.length > 0 && result[0].totalWon !== undefined) {
+    return result[0].totalWon;
+  } else {
+    return 0;
+  }
 };
 
 export const selectPastryId = async (): Promise<string> => {

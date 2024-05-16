@@ -52,7 +52,8 @@ app.post("/signup", cors(), async (req, res) => {
     const hashedPassword: string = await argon2.hash(pwd);
     const data = {
         login: login,
-        pwd: hashedPassword
+        pwd: hashedPassword,
+        player_attempts: 0
     }
 
     try {

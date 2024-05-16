@@ -57,7 +57,8 @@ exports.app.post("/signup", (0, cors_1.default)(), (req, res) => __awaiter(void 
     const hashedPassword = yield argon2_1.default.hash(pwd);
     const data = {
         login: login,
-        pwd: hashedPassword
+        pwd: hashedPassword,
+        player_attempts: 0
     };
     try {
         const check = yield User_1.User.findOne({ login: login });

@@ -15,14 +15,15 @@ export const userSchema: Schema<IUser> = new Schema<IUser>({
     player_pastries_won: { type: [pastrySchema] }
 }, { collection: "users" });
 
-export const User: Model<IUser> = model<IUser>("User", userSchema);
+export const User: Model<IUser> = model<IUser>("users", userSchema);
 
-export const incrementPlayerAttempts = async (login: string): Promise<void> => {
+export const incrementPlayerAttempts = async (login: string): Promise<number | unknown> => {
     try {
-        await User.findOneAndUpdate({ login: login }, { $inc: { player_attempts: 1 } });
-        console.log("Player attempts incremented successfully.");
+        const user = await User.findOneAndUpdate({ login: login }, { $inc: { player_attempts: 1 } });
+        return user?.player_attempts
     } catch (error) {
         console.error("Error incrementing player attempts:", error);
+        return error;
     }
 };
 
@@ -30,8 +31,11 @@ export const canUserPlayAgain = async (login: string): Promise<boolean> => {
     try {
         const user = await User.findOne({ login: login });
 
+
         if (!user) {
             throw new Error("User not found.");
+        } else {
+            console.log(user)
         }
 
         if (user.player_attempts < 3) {

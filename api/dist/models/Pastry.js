@@ -17,10 +17,10 @@ exports.pastrySchema = new mongoose_1.Schema({
     stock: { type: Number },
     quantityWon: { type: Number }
 }, { collection: "pastries" });
-exports.Pastry = (0, mongoose_1.model)("Pastry", exports.pastrySchema);
+exports.Pastry = (0, mongoose_1.model)("pastries", exports.pastrySchema);
 // Ajout de la méthode statique pour comptabiliser le stock total des pâtisseries
-const getTotalStock = () => {
-    exports.Pastry.aggregate([
+const getTotalStock = () => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield exports.Pastry.aggregate([
         {
             $group: {
                 _id: null,
@@ -28,11 +28,17 @@ const getTotalStock = () => {
             }
         }
     ]);
-};
+    if (Array.isArray(result) && result.length > 0 && result[0].totalStock !== undefined) {
+        return result[0].totalStock; // Retourner la valeur de 'totalStock'
+    }
+    else {
+        return 0;
+    }
+});
 exports.getTotalStock = getTotalStock;
 // Ajout de la méthode statique pour comptabiliser le stock total des pâtisseries
-const getTotalWon = () => {
-    exports.Pastry.aggregate([
+const getTotalWon = () => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield exports.Pastry.aggregate([
         {
             $group: {
                 _id: null,
@@ -40,7 +46,13 @@ const getTotalWon = () => {
             }
         }
     ]);
-};
+    if (Array.isArray(result) && result.length > 0 && result[0].totalWon !== undefined) {
+        return result[0].totalWon;
+    }
+    else {
+        return 0;
+    }
+});
 exports.getTotalWon = getTotalWon;
 const selectPastryId = () => __awaiter(void 0, void 0, void 0, function* () {
     try {

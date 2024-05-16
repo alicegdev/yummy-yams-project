@@ -13,4 +13,4 @@ export const dicesComboSchema: Schema<IDicesCombo> = new Schema<IDicesCombo>({
 
 
 
-export const dicesCombo: Model<IDicesCombo> = model<IDicesCombo>("DicesCombo", dicesComboSchema);
+export const dicesCombo: Model<IDicesCombo> = model<IDicesCombo>("dicesCombo", dicesComboSchema);

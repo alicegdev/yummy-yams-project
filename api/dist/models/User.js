@@ -18,14 +18,15 @@ exports.userSchema = new mongoose_1.Schema({
     player_attempts: { type: Number },
     player_pastries_won: { type: [Pastry_1.pastrySchema] }
 }, { collection: "users" });
-exports.User = (0, mongoose_1.model)("User", exports.userSchema);
+exports.User = (0, mongoose_1.model)("users", exports.userSchema);
 const incrementPlayerAttempts = (login) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        yield exports.User.findOneAndUpdate({ login: login }, { $inc: { player_attempts: 1 } });
-        console.log("Player attempts incremented successfully.");
+        const user = yield exports.User.findOneAndUpdate({ login: login }, { $inc: { player_attempts: 1 } });
+        return user === null || user === void 0 ? void 0 : user.player_attempts;
     }
     catch (error) {
         console.error("Error incrementing player attempts:", error);
+        return error;
     }
 });
 exports.incrementPlayerAttempts = incrementPlayerAttempts;
@@ -34,6 +35,9 @@ const canUserPlayAgain = (login) => __awaiter(void 0, void 0, void 0, function* 
         const user = yield exports.User.findOne({ login: login });
         if (!user) {
             throw new Error("User not found.");
+        }
+        else {
+            console.log(user);
         }
         if (user.player_attempts < 3) {
             return true;

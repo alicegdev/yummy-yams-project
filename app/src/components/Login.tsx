@@ -18,6 +18,7 @@ function Login() {
             })
                 .then(res => {
                     if (res.data.accessToken) {
+                        console.log(res.data.accessToken)
                         setLogin(login);
                         localStorage.setItem('token', res.data.accessToken);
                         navigate('/home');
