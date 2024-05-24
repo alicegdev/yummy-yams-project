@@ -4,7 +4,7 @@ import { Db } from 'mongodb';
 import cors from "cors";
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
-dotenv.config();
+import bodyParser from "body-parser";
 
 class Database {
     public db: Db | null;
@@ -17,6 +17,9 @@ class Database {
         try {
             app.use(cors())
             app.use(express.json())
+            app.use(bodyParser.json());
+            dotenv.config();
+
             const username = process.env.MONGO_USERNAME;
             const password = process.env.MONGO_PASSWORD;
             const database = process.env.MONGO_DBNAME;

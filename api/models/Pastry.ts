@@ -1,12 +1,8 @@
-import { Schema, model, Document, Model } from "mongoose";
+import { model, Model, Schema } from "mongoose";
+import { IPastry, } from "../types/Pastry"
 
-export interface IPastry extends Document {
-  name: string;
-  image: string;
-  stock: number;
-  quantityWon: number;
-}
 
+// Removed useless code duplication and kept only model definition and methods interacting with database
 export const pastrySchema: Schema<IPastry> = new Schema<IPastry>({
   name: { type: String },
   image: { type: String },

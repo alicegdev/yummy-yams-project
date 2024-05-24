@@ -1,12 +1,6 @@
-import { Schema, model, Document, Model } from "mongoose";
-import { Pastry, IPastry, pastrySchema, selectPastryId, incrementQuantityWon } from "./Pastry"
-
-export interface IUser extends Document {
-    login: string;
-    pwd: string;
-    player_attempts: number;
-    player_pastries_won: IPastry[];
-}
+import { model, Model, Schema } from "mongoose";
+import { Pastry, selectPastryId, incrementQuantityWon, pastrySchema } from "./Pastry"
+import { IUser } from "../types/User"
 
 export const userSchema: Schema<IUser> = new Schema<IUser>({
     login: { type: String, required: true },

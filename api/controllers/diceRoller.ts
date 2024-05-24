@@ -31,10 +31,7 @@ const generateRandomDices = function (): number[] {
 export const rollerHandler = async (login: string): Promise<any> => {
     let messageToUser = '';
     const dices = generateRandomDices();
-    console.log("total Stock " + await getTotalStock())
-    console.log("total won" + await getTotalWon())
-    console.log("User can play again " + await canUserPlayAgain(login))
-
+  
     if ((await getTotalStock() > await getTotalWon()) && await canUserPlayAgain(login)) {
         await incrementPlayerAttempts(login);
         const conditions = [
