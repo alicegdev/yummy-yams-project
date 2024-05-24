@@ -18,6 +18,7 @@ class Database {
             await this.client.connect();
             console.log('Connecté à la base de données MongoDB');
             this.db = this.client.db('yummy-yams-db');
+            console.log(this.db.collection('pastries').find().toArray());
             this.pastriesCollection = this.db.collection('pastries');
         } catch (err) {
             console.error('Erreur de connexion à la base de données :', err);

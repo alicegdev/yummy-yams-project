@@ -14,7 +14,7 @@ const express = require('express');
 const mongodb_1 = require("mongodb");
 class Database {
     constructor() {
-        this.client = new mongodb_1.MongoClient('mongodb://localhost:27017');
+        this.client = new mongodb_1.MongoClient('mongodb://root:foobar@localhost:27017');
         this.db = null;
         this.pastriesCollection = null;
     }
@@ -24,6 +24,7 @@ class Database {
                 yield this.client.connect();
                 console.log('Connecté à la base de données MongoDB');
                 this.db = this.client.db('yummy-yams-db');
+                console.log(this.db.collection('pastries').find().toArray());
                 this.pastriesCollection = this.db.collection('pastries');
             }
             catch (err) {

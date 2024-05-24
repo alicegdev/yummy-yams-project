@@ -15,12 +15,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.app = void 0;
 const express_1 = __importDefault(require("express"));
 const Pastry_1 = require("./models/Pastry");
+const cors_1 = __importDefault(require("cors"));
 const database_1 = require("./database");
 // Configuration de l'application Express
 exports.app = (0, express_1.default)();
 const port = 3000;
 // Middleware pour parser le corps des requêtes en JSON
-exports.app.use(express_1.default.json());
+exports.app.use((0, cors_1.default)());
 database_1.database.connect();
 // Route de test pour vérifier la connexion à MongoDB
 // Route GET pour récupérer des données de la base de données MongoDB

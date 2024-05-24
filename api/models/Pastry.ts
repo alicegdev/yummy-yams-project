@@ -13,9 +13,9 @@ export class Pastry {
         this.quantityWon = quantityWon;
     }
 
-    async findAll(): Promise<Pastry[]> {
+    async findAll(): Promise<Pastry[] | undefined> {
         try {
-            return await database.pastriesCollection?.find().toArray() || [];
+            return await database.pastriesCollection?.find().toArray();
         } catch (err) {
             console.error('Erreur lors de la recherche des pâtisseries :', err);
             return [];

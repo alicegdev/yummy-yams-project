@@ -22,7 +22,7 @@ class Pastry {
         return __awaiter(this, void 0, void 0, function* () {
             var _a;
             try {
-                return (yield ((_a = database_1.database.pastriesCollection) === null || _a === void 0 ? void 0 : _a.find().toArray())) || [];
+                return yield ((_a = database_1.database.pastriesCollection) === null || _a === void 0 ? void 0 : _a.find().toArray());
             }
             catch (err) {
                 console.error('Erreur lors de la recherche des pâtisseries :', err);
