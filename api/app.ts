@@ -2,11 +2,9 @@ import cors from "cors";
 import { app, database } from "./database";
 import { User } from "./models/User";
 import { rollerHandler } from "./controllers/diceRoller"
-import dotenv from "dotenv"
 import { createAccessToken, verifyToken } from "./middlewares/token"
 import argon2 from "argon2";
-
-dotenv.config()
+import { loginUser } from "./controllers/login"
 
 export interface Token {
     login: string;
@@ -16,12 +14,18 @@ const port = 3001;
 
 database.connect();
 
+// Mettre les routes dans des fichiers séparés
+
 app.post("/", cors(), async (req, res) => {
     const { login, pwd } = req.body;
     try {
-        const user = await User.findOne({ login: login })
-        const userLogin = { login: login }
-        createAccessToken(user, res, pwd, userLogin);
+        const { user, message } = await loginUser(login, pwd);
+        if (user != null) {
+            const accessToken = createAccessToken(user);
+            res.status(200).json(accessToken);
+        } else {
+            res.status(403).json(message)
+        }
     } catch (e) {
         res.status(500).json("An error occured." + e)
     }

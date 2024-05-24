@@ -1,21 +1,29 @@
-import jwt from "jsonwebtoken";
-import argon2 from "argon2";
-import { Response } from "express-serve-static-core";
-import { Document, Types } from "mongoose";
-import { IUser } from "../types/User";
+import jwt from 'jsonwebtoken';
+import { Types, Document } from 'mongoose';
+import { IUser } from '../types/User'; // Assurez-vous de fournir le bon chemin pour l'import
 
-export const createAccessToken = async (user: (Document<unknown, {}, IUser> & IUser & { _id: Types.ObjectId; }) | null, res: Response<any, Record<string, any>, number>, pwd: string | Buffer, userLogin: string | object | Buffer) => {
-    const isMatch = user && await argon2.verify(user.pwd, pwd)
-        if (isMatch) {
-            process.env.ACCESS_TOKEN ? res.json({
-                accessToken: jwt.sign(userLogin, process.env.ACCESS_TOKEN, {
-                    expiresIn: '1h',
-                })
-            }) : res.json('Could not generate token')
-        } else {
-            res.json("Wrong details.")
-        }
-}
+type AccessTokenResult = {
+    accessToken?: string;
+    message: string;
+};
+
+export const createAccessToken = async (
+    user: Document<unknown, {}, IUser> & IUser & { _id: Types.ObjectId }
+): Promise<AccessTokenResult> => {
+    const envToken: string | undefined = process.env.ACCESS_TOKEN;
+
+    if (!envToken) {
+        return { message: 'Could not generate token' };
+    }
+
+    try {
+        const accessToken = jwt.sign(user.login, envToken, { expiresIn: '1h' });
+        return { accessToken, message: 'OK' };
+    } catch (e) {
+        return { message: `An error occurred: ${e}` };
+    }
+};
+
 
 export const verifyToken = (authHeader: string | undefined, res: { sendStatus: (arg0: number) => void; }) => {
     const token = authHeader && authHeader.split(' ')[1]
