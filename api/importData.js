@@ -9,7 +9,7 @@ async function main() {
   });
 
   // Sélectionner la base de données mydatabase
-    const db = client.db("yummy_yams_db");
+    const db = client.db("yummy-yams-db");
 
   try {
     await client.connect();

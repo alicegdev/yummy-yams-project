@@ -1,34 +1,142 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+var __awaiter =
+  (this && this.__awaiter) ||
+  function (thisArg, _arguments, P, generator) {
+    function adopt(value) {
+      return value instanceof P
+        ? value
+        : new P(function (resolve) {
+            resolve(value);
+          });
+    }
     return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
+      function fulfilled(value) {
+        try {
+          step(generator.next(value));
+        } catch (e) {
+          reject(e);
+        }
+      }
+      function rejected(value) {
+        try {
+          step(generator["throw"](value));
+        } catch (e) {
+          reject(e);
+        }
+      }
+      function step(result) {
+        result.done
+          ? resolve(result.value)
+          : adopt(result.value).then(fulfilled, rejected);
+      }
+      step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
-};
+  };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Pastry = void 0;
-const database_1 = require("../database");
-class Pastry {
-    constructor(name = '', image = '', stock = 0, quantityWon = 0) {
-        this.name = name;
-        this.image = image;
-        this.stock = stock;
-        this.quantityWon = quantityWon;
+exports.incrementQuantityWon =
+  exports.selectPastryId =
+  exports.getTotalWon =
+  exports.getTotalStock =
+  exports.Pastry =
+  exports.pastrySchema =
+    void 0;
+const mongoose_1 = require("mongoose");
+exports.pastrySchema = new mongoose_1.Schema(
+  {
+    name: { type: String },
+    image: { type: String },
+    stock: { type: Number },
+    quantityWon: { type: Number },
+  },
+  { collection: "pastries" }
+);
+exports.Pastry = (0, mongoose_1.model)("pastries", exports.pastrySchema);
+// Ajout de la méthode statique pour comptabiliser le stock total des pâtisseries
+const getTotalStock = () =>
+  __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield exports.Pastry.aggregate([
+      {
+        $group: {
+          _id: null,
+          totalStock: { $sum: "$stock" },
+        },
+      },
+    ]);
+    if (
+      Array.isArray(result) &&
+      result.length > 0 &&
+      result[0].totalStock !== undefined
+    ) {
+      return result[0].totalStock; // Retourner la valeur de 'totalStock'
+    } else {
+      return 0;
     }
-    findAll() {
-        return __awaiter(this, void 0, void 0, function* () {
-            var _a;
-            try {
-                return yield ((_a = database_1.database.pastriesCollection) === null || _a === void 0 ? void 0 : _a.find().toArray());
-            }
-            catch (err) {
-                console.error('Erreur lors de la recherche des pâtisseries :', err);
-                return [];
-            }
-        });
+  });
+exports.getTotalStock = getTotalStock;
+// Ajout de la méthode statique pour comptabiliser le stock total des pâtisseries
+const getTotalWon = () =>
+  __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield exports.Pastry.aggregate([
+      {
+        $group: {
+          _id: null,
+          totalWon: { $sum: "$quantityWon" },
+        },
+      },
+    ]);
+    if (
+      Array.isArray(result) &&
+      result.length > 0 &&
+      result[0].totalWon !== undefined
+    ) {
+      return result[0].totalWon;
+    } else {
+      return 0;
     }
-}
-exports.Pastry = Pastry;
+  });
+exports.getTotalWon = getTotalWon;
+const selectPastryId = () =>
+  __awaiter(void 0, void 0, void 0, function* () {
+    try {
+      // Récupérer tous les IDs des pâtisseries avec un stock supérieur à 0
+      const availablePastryIds = yield exports.Pastry.aggregate([
+        { $match: { stock: { $gt: 0 } } }, // Filtrer les pâtisseries avec un stock supérieur à 0
+        { $group: { _id: null, ids: { $push: "$_id" } } }, // Regrouper les IDs des pâtisseries
+      ]);
+      // Récupérer tous les IDs des pâtisseries avec un stock égal à 0
+      const zeroStockPastryIds = yield exports.Pastry.aggregate([
+        { $match: { stock: 0 } }, // Filtrer les pâtisseries avec un stock égal à 0
+        { $group: { _id: null, ids: { $push: "$_id" } } }, // Regrouper les IDs des pâtisseries
+      ]);
+      // Sélectionner aléatoirement un ID parmi ceux avec un stock supérieur à 0
+      if (availablePastryIds.length > 0) {
+        const randomIndex = Math.floor(
+          Math.random() * availablePastryIds[0].ids.length
+        );
+        return availablePastryIds[0].ids[randomIndex];
+      } else if (zeroStockPastryIds.length > 0) {
+        const randomIndex = Math.floor(
+          Math.random() * zeroStockPastryIds[0].ids.length
+        );
+        return zeroStockPastryIds[0].ids[randomIndex];
+      } else {
+        throw new Error("No pastries found.");
+      }
+    } catch (error) {
+      throw new Error("Error selecting pastry ID: " + error.message);
+    }
+  });
+exports.selectPastryId = selectPastryId;
+const incrementQuantityWon = (pastryId) =>
+  __awaiter(void 0, void 0, void 0, function* () {
+    try {
+      yield exports.Pastry.updateOne(
+        { _id: pastryId },
+        { $inc: { quantityWon: 1 } }
+      );
+      console.log("QuantityWon incremented successfully.");
+    } catch (error) {
+      console.error("Error incrementing quantityWon:", error.message);
+    }
+  });
+exports.incrementQuantityWon = incrementQuantityWon;
